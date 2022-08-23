@@ -8,11 +8,17 @@ import api from "../services/Api";
 export type IContext = {
   children: ReactNode,
 }
-type IAccount = {
-  email: string,
-  password: string,
-}
 
+type IUser = {
+  data: {
+    token: string,
+    user: {
+      name: string;
+      course_module: string;
+      id: string;
+    }
+  }
+}
 
 type IHubContext = {
   onSubmitLogin: (argo0: FieldValues ) => void;
@@ -27,7 +33,8 @@ const HubProvider = ({ children }: IContext) => {
       console.log(account)
     api
       .post("/sessions", account)
-      .then((res) => {
+      .then((res:IUser) => {
+        console.log(res.data.user)
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", res.data.user.name);
         localStorage.setItem("course_module", res.data.user.course_module);
@@ -67,7 +74,7 @@ const HubProvider = ({ children }: IContext) => {
         name: name,
         password: password,
       })
-      .then((res) => {
+      .then(() => {
         toast.success("Registrado com sucesso!", {
           position: "top-center",
           autoClose: 1000,
